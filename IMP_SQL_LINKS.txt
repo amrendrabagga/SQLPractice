@@ -1,7 +1,7 @@
 SQL IMP LINKS
-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
 > DEFFERED SEGMENT CREATION AND HANDLING DB SPACE
 	> http://www.dba-oracle.com/t_oracle_deferred_segment_creation.htm
 	
 > Avoid full table scan
-		http://www.dba-oracle.com/t_fix_unnecessary_full_table_scans.htm
+	> http://www.dba-oracle.com/t_fix_unnecessary_full_table_scans.htm

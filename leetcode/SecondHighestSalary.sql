@@ -7,6 +7,10 @@ select null as SecondHighestSalary from dual where not exists(
 );
 
 -- this query is corelated sub query,
---used min() cause if no rows returned then min gives null
+-- used min() cause if no rows returned then min gives null
 select nvl(min(salary), null) as SecondHighestSalary from Employee e1
  where 1 = (select count(distinct salary) from employee e2 where e2.salary > e1.salary);
+
+-- this is specific query to find second highest but not a generic one
+select max(salary) as SecondHighestSalary from Employee
+ where salary not in (select max(salary) from Employee);
