@@ -1,5 +1,5 @@
 SQL
-----------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
 > COUNT - it counts no of rows in table.
 	> 3 flavours
 		1. COUNT(*) - count all rows with null and duplicate rows.
@@ -36,14 +36,17 @@ SQL
 				   [query_partition_clause] 
 				   order_by_clause
 				)
-		> The order_by_clause is required. It specifies the order of rows in each partition or in the whole result set. The 			order_by_clause has the following form:
+		> The order_by_clause is required. It specifies the order of rows in each partition or in the whole result set.
+		    The order_by_clause has the following form:
 			 	ORDER BY expression1 [,expression2,...] [ASC | DESC ] [NULLS FIRST | LAST]
 		
-		> The query_partition_clause is optional. It distributes the rows into partitions to which the function is applied. 			If you omit the query_partition_clause, the function will treat the whole result set as a single partition. The 			query_partition_clause has the following form:
+		> The query_partition_clause is optional. It distributes the rows into partitions to which the function is applied.
+		    If you omit the query_partition_clause, the function will treat the whole result set as a single partition. The query_partition_clause has the following form:
 				PARTITION BY expression1 [,expression2, ...]
 	
 	> Using ROW_NUMBER() for pagination
-		> Suppose you want to display products by pages with the list price from high to low, each page has 10 products. To 			display the third page, you use the ROW_NUMBER() function as follows:
+		> Suppose you want to display products by pages with the list price from high to low, each page has 10 products.
+		    To display the third page, you use the ROW_NUMBER() function as follows:
 				WITH cte_products AS (
 				    SELECT 
 				        row_number() OVER(
@@ -60,7 +63,7 @@ SQL
 NOTE - we cannot use order by in union in both queries,
 		ex - SELECT MIN(CITY), LENGTH(CITY) AS LEN FROM STATION GROUPY BY LENGTH(CITY) ORDER BY LEN FETCH FIRST ROW ONLY
 				UNION
-			SELECT MAX(CITY), LENGTH(CITY) AS LEN FROM STATION GROUPY BY LENGTH(CITY) ORDER BY LEN DESC FETCH FIRST ROW 			ONLY;
+			SELECT MAX(CITY), LENGTH(CITY) AS LEN FROM STATION GROUPY BY LENGTH(CITY) ORDER BY LEN DESC FETCH FIRST ROW ONLY;
 		this will give error, cause order by is used on overall dataset, cannot use in both query
 
 > SUBSTR - function extracts a substring from a string with various flexible options.
@@ -68,15 +71,15 @@ NOTE - we cannot use order by in union in both queries,
 				SUBSTR( str, start_position [, substring_length, [, occurrence ]] );
 				
 			Arguments - 	
-			> str - str is the string that you want to extract the substring. The data type of str can be CHAR, VARCHAR2, 				NCHAR, NVARCHAR2, CLOB, or NCLOB.
+			> str - str is the string that you want to extract the substring. The data type of str can be CHAR, VARCHAR2, NCHAR, NVARCHAR2, CLOB, or NCLOB.
 			> start_position - 
-				start_position is an integer that determines where the substring starts. The following explains the effect 				of the start_position value:
+				start_position is an integer that determines where the substring starts. The following explains the effect 	of the start_position value:
 
 					> Indexing starts from 1, but if we specify zero then treats as 1.
-					> In case the start_position is positive, the SUBSTR() function will count from the beginning of the str 						to determine the first character of the substring.
-					> If the start_position is negative, then the SUBSTR() function will count backward from the end of the 						str to find the first character of the substring.
+					> In case the start_position is positive, the SUBSTR() function will count from the beginning of the str to determine the first character of the substring.
+					> If the start_position is negative, then the SUBSTR() function will count backward from the end of the str to find the first character of the substring.
 			> substring_length - 
-				> substring_length determines the number of characters in the substring. If substring_length is omitted, the 					SUBSTR() function returns all characters starting from the start_position.
+				> substring_length determines the number of characters in the substring. If substring_length is omitted, the SUBSTR() function returns all characters starting from the start_position.
 
 				> In case the substring_length is less than 1, the SUBSTR() function returns null.
 		
@@ -85,7 +88,7 @@ NOTE - we cannot use order by in union in both queries,
 				REGEXP_LIKE(source_string, search_pattern [, match_parameter]);
 			
 			Arguments - 
-			> source_string - is a string for which to be searched. Typically, it is a character column of any data type 				CHAR, VARCHAR2, NCHAR, NVARCHAR2, CLOB, or NCLOB.
+			> source_string - is a string for which to be searched. Typically, it is a character column of any data type CHAR, VARCHAR2, NCHAR, NVARCHAR2, CLOB, or NCLOB.
 			> search_pattern - is a literal string that represents the regular expression pattern to be matched.
 			> match_parameter - is a literal string that changes the default matching behavior of the REGEXP_LIKE() function.
 
