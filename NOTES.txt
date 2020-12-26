@@ -73,7 +73,7 @@ NOTE - we cannot use order by in union in both queries,
 			Arguments - 	
 			> str - str is the string that you want to extract the substring. The data type of str can be CHAR, VARCHAR2, NCHAR, NVARCHAR2, CLOB, or NCLOB.
 			> start_position - 
-				start_position is an integer that determines where the substring starts. The following explains the effect 	of the start_position value:
+				start_position is an integer that determines where the substring starts. The following explains the effect of the start_position value:
 
 					> Indexing starts from 1, but if we specify zero then treats as 1.
 					> In case the start_position is positive, the SUBSTR() function will count from the beginning of the str to determine the first character of the substring.
