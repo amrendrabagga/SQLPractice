@@ -8,6 +8,7 @@ BEGIN
     RETURN result;
 END;
 
+-- efficient
 CREATE FUNCTION getNthHighestSalary(N IN NUMBER) RETURN NUMBER IS
 result NUMBER;
 BEGIN

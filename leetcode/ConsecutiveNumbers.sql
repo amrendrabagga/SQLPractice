@@ -4,7 +4,7 @@ select distinct num as ConsecutiveNums from(
  )
  where check1=num and check2=num;
 
-
+-- using joins instead of inbuild functions
 select distinct a.num as ConsecutiveNums from logs a JOIN logs b
 on a.num=b.num and a.id-b.id=1
 JOIN logs c on
