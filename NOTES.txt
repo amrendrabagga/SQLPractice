@@ -24,41 +24,6 @@ SQL
 			> DESC - NULLS FIRST
 			> ASC - NULLS LAST
 		> Ex - SELECT COLUMN_NAME FROM TABLE ORDER BY COLUMN_NAME DESC NULLS LAST;
-			
-> ROW_NUMBER() - SELECTING N ROWS WITH ORDER BY CLAUSE
-	> We cannot apply ROWNUMBER after ORDER BY CLAUSE
-		// this will give error
-		> SELECT CITY, LENGTH(CITY) FROM STATION ORDER BY LENGTH(CITY), CITY WHERE ROWNUM=1;
-	> Further applying where clause before order by will not fulfill our requirement
-	> Thus we use ROW_NUMBER()	
-	> SYNTAX - 
-				ROW_NUMBER() OVER (
-				   [query_partition_clause] 
-				   order_by_clause
-				)
-		> The order_by_clause is required. It specifies the order of rows in each partition or in the whole result set.
-		    The order_by_clause has the following form:
-			 	ORDER BY expression1 [,expression2,...] [ASC | DESC ] [NULLS FIRST | LAST]
-		
-		> The query_partition_clause is optional. It distributes the rows into partitions to which the function is applied.
-		    If you omit the query_partition_clause, the function will treat the whole result set as a single partition. The query_partition_clause has the following form:
-				PARTITION BY expression1 [,expression2, ...]
-	
-	> Using ROW_NUMBER() for pagination
-		> Suppose you want to display products by pages with the list price from high to low, each page has 10 products.
-		    To display the third page, you use the ROW_NUMBER() function as follows:
-				WITH cte_products AS (
-				    SELECT 
-				        row_number() OVER(
-				            ORDER BY list_price DESC
-				        ) row_num, 
-				        product_name, 
-				        list_price
-				    FROM 
-				        products
-				)
-				SELECT * FROM cte_products
-				WHERE row_num > 30 and row_num <= 40;
 	
 NOTE - we cannot use order by in union in both queries,
 		ex - SELECT MIN(CITY), LENGTH(CITY) AS LEN FROM STATION GROUPY BY LENGTH(CITY) ORDER BY LEN FETCH FIRST ROW ONLY
@@ -116,4 +81,130 @@ NOTE - we cannot use order by in union in both queries,
 	> If none condition satisfy it returns result of ELSE, if ELSE is not specified then oracle return null
 	> We cannot explicitly use NULL in condition or result	
 			
-		
+> Order of Execution Of a Query
+    > FROM/ JOIN
+    > WHERE
+    > GROUP BY
+    > HAVING
+    > SELECT
+    > DISTINCT
+    > ANALYTIC FUNTION - RANK(), DENSE_RANK()..
+    > ORDER BY
+    > LIMIT/ OFFSET
+
+> LISTAGG
+	> aggregates values within same group
+	> with group by
+		> select deptno, LISTAGG(ename, ',') WITHIN GROUP (ORDER BY ename) as employees
+			FROM emp GROUP BY deptno ORDER BY deptno;
+	> with analytic function
+		> SELECT deptno, hire_date, last_name,
+			LISTAGG(last_name, ',') WITHIN GROUP (ORDER BY hire_date, last_name) OVER (PARTITION BY deptno) as employees
+			FROM emp WHERE hire_date < '01-SEP-2003' ORDER BY deptno, hire_date, last_name;
+
+> RANK()
+    > It is an analytic function that calculates the rank of a value in a set of values.
+    > Follows Olympic rules, if two people share a gold then no silver medalist
+        > ie if tie happens between 2 people with rank 1 so them next rank will be given is 3
+    > Rank is not in sequence.
+    > Syntax -
+        RANK()
+        	OVER ([ query_partition_clause ] order_by_clause)
+
+        > The order_by_clause is required. It specifies the order of rows in each partition or in the whole result set.
+            The order_by_clause has the following form:
+                ORDER BY expression1 [,expression2,...] [ASC | DESC ] [NULLS FIRST | LAST]
+
+        > The query_partition_clause is optional. It distributes the rows into partitions to which the function is applied.
+            If you omit the query_partition_clause, the function will treat the whole result set as a single partition.
+            The query_partition_clause has the following form:
+                PARTITION BY expression1 [,expression2, ...]
+
+    > If we use query_partition_clause, then rank is given to set of values under same group,
+        next group rank starts with 1 again
+
+> DENSE_RANK()
+    > Similar to RANK(), but here we will have sequence of rank instead of skipping next rank in case of tie
+    > Syntax -
+            DENSE_RANK()
+            	OVER ([ query_partition_clause ] order_by_clause)
+
+        > The order_by_clause is required. It specifies the order of rows in each partition or in the whole result set.
+            The order_by_clause has the following form:
+                ORDER BY expression1 [,expression2,...] [ASC | DESC ] [NULLS FIRST | LAST]
+
+        > The query_partition_clause is optional. It distributes the rows into partitions to which the function is applied.
+            If you omit the query_partition_clause, the function will treat the whole result set as a single partition.
+            The query_partition_clause has the following form:
+                PARTITION BY expression1 [,expression2, ...]
+
+    > If we use query_partition_clause, then rank is given to set of values under same group,
+            next group rank starts with 1 again
+
+> ROW_NUMBER() - SELECTING N ROWS WITH ORDER BY CLAUSE
+	> This is another analytic function for ranking given set of values
+	> Here we will have unique values even in case of tie
+	> SYNTAX -
+				ROW_NUMBER() OVER (
+				   [query_partition_clause]
+				   order_by_clause
+				)
+		> The order_by_clause is required. It specifies the order of rows in each partition or in the whole result set.
+		    The order_by_clause has the following form:
+			 	ORDER BY expression1 [,expression2,...] [ASC | DESC ] [NULLS FIRST | LAST]
+
+		> The query_partition_clause is optional. It distributes the rows into partitions to which the function is applied.
+		    If you omit the query_partition_clause, the function will treat the whole result set as a single partition.
+		     The query_partition_clause has the following form:
+				PARTITION BY expression1 [,expression2, ...]
+
+	> Using ROW_NUMBER() for pagination
+		> Suppose you want to display products by pages with the list price from high to low, each page has 10 products.
+		    To display the third page, you use the ROW_NUMBER() function as follows:
+				WITH cte_products AS (
+				    SELECT
+				        row_number() OVER(
+				            ORDER BY list_price DESC
+				        ) row_num,
+				        product_name,
+				        list_price
+				    FROM
+				        products
+				)
+				SELECT * FROM cte_products
+				WHERE row_num > 30 and row_num <= 40;
+
+> LAG()
+    > To compute value from previous rows
+	> Syntax - 
+		LAG
+		  { ( value_expr [, offset [, default]]) [ { RESPECT | IGNORE } NULLS ] 
+		  | ( value_expr [ { RESPECT | IGNORE } NULLS ] [, offset [, default]] )
+		  }
+		  OVER ([ query_partition_clause ] order_by_clause)
+	> Ex - 
+		SELECT empno,
+		       ename,
+		       job,
+		       sal,
+		       LAG(sal, 1, 0) OVER (ORDER BY sal) AS sal_prev, --LAG(column_name, no_of_column, default_if_not_present)
+		       sal - LAG(sal, 1, 0) OVER (ORDER BY sal) AS sal_diff
+		FROM   emp;
+	
+> LEAD()
+	> To compute value from next rows
+	> Syntax -
+		LEAD
+		  { ( value_expr [, offset [, default]] ) [ { RESPECT | IGNORE } NULLS ] 
+		  | ( value_expr [ { RESPECT | IGNORE } NULLS ] [, offset [, default]] )
+		  }
+		  OVER ([ query_partition_clause ] order_by_clause)
+	> Ex - 
+		SELECT empno,
+		       ename,
+		       job,
+		       sal,
+		       LEAD(sal, 1, 0) OVER (ORDER BY sal) AS sal_next,--LEAD(column_name, no_of_column, default_if_not_present)
+		       LEAD(sal, 1, 0) OVER (ORDER BY sal) - sal AS sal_diff
+		FROM   emp;
+

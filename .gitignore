@@ -33,3 +33,5 @@ logs
 .idea/
 .vscode/
 *.sw*
+
+NOTES.txt
